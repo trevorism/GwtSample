@@ -1,0 +1,49 @@
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'groovy'
+apply plugin: 'eclipse'
+
+version = '1.0'
+group = 'com.brooks'
+
+def GWT_VERSION = "2.6.0"
+def JAVA_VERSION = '1.7'
+def GROOVY_VERSION = "2.2.2"
+
+sourceCompatibility = JAVA_VERSION
+targetCompatibility = JAVA_VERSION
+
+repositories {
+	mavenCentral()
+}
+
+
+dependencies {
+	providedCompile "com.google.gwt:gwt-dev:${GWT_VERSION}@jar"
+	compile "com.google.gwt:gwt-user:${GWT_VERSION}@jar"
+	runtime "com.google.gwt:gwt-servlet:${GWT_VERSION}@jar"
+	testCompile 'junit:junit:4.10'
+	compile "org.codehaus.groovy:groovy-all:${GROOVY_VERSION}"
+}
+
+def GWT_OUTPUT_DIR = "${buildDir}\\gwtCompile"
+def MODULE_NAME = "com.brooks.sample.sample"
+
+task ('compileGwt', type: JavaExec){
+	outputs.dir(GWT_OUTPUT_DIR)
+	dependsOn 'classes'
+	
+	FileCollection gwtClasspath = files(configurations.compile, 'build/resources/main', 'src/main/java')
+	classpath(gwtClasspath)
+	main("com.google.gwt.dev.Compiler")
+	maxHeapSize("256m")
+	args("-war")
+	args(GWT_OUTPUT_DIR)
+	args(MODULE_NAME)
+	
+}
+
+war{
+	dependsOn 'compileGwt'
+	from GWT_OUTPUT_DIR
+}

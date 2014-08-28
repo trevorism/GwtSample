@@ -4,6 +4,6 @@
 	
 	<inherits name='com.google.gwt.user.theme.standard.Standard' />
 	<entry-point class='com.brooks.sample.client.SampleApplication' />
-	<stylesheet src='sample.css' />
-	
+
+	<source path='client'/>
 </module>
